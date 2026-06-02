@@ -1,0 +1,53 @@
+{
+  "name": "multizona-ecommerce-backend",
+  "version": "1.0.0",
+  "description": "Backend for local e-commerce with multi-zone support",
+  "main": "src/app.js",
+  "packageManager": "pnpm@10.11.0",
+  "scripts": {
+    "preinstall": "node -e \"const ua=process.env.npm_config_user_agent||''; if(!ua.includes('pnpm')){console.error('Este proyecto usa pnpm. Ejecuta: corepack enable && corepack prepare pnpm@10.11.0 --activate'); process.exit(1)}\"",
+    "start": "node src/app.js",
+    "start:render": "node scripts/start-render.js",
+    "dev": "nodemon src/app.js",
+    "tunnel": "ngrok http 3000",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio",
+    "db:seed:products": "node scripts/seed-products.js",
+    "db:reset": "prisma migrate reset",
+    "db:status": "prisma migrate status"
+  },
+  "keywords": [
+    "ecommerce",
+    "multizone",
+    "express",
+    "postgresql"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.11.3",
+    "resend": "^6.12.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "prisma": "^5.22.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma"
+    ]
+  }
+}

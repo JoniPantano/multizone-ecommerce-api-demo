@@ -1,0 +1,188 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Zone {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  users       User[]
+  products    Product[]
+  pendingRegistrations PendingRegistration[]
+
+  @@map("zones")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      String   @default("customer") // customer, seller, admin
+  zoneId    Int
+  emailVerified Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  zone             Zone              @relation(fields: [zoneId], references: [id])
+  orders           Order[]
+  products         Product[]         // Products this user sells
+  verificationCodes VerificationCode[]
+  idempotencyRequests IdempotencyRequest[]
+
+  @@map("users")
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  stock       Int      @default(0)
+  zoneId      Int
+  sellerId    Int?     // For seller panel
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  zone        Zone     @relation(fields: [zoneId], references: [id])
+  seller      User?    @relation(fields: [sellerId], references: [id])
+  orderItems  OrderItem[]
+  images      ProductImage[]
+
+  @@map("products")
+}
+
+model IdempotencyRequest {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  action    String
+  key       String
+  orderId   Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order     Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, action, key])
+  @@index([userId, action])
+  @@map("idempotency_requests")
+}
+
+model ProductImage {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  url       String
+  position  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, position])
+  @@index([productId])
+  @@map("product_images")
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  total     Float
+  status    String      @default("pending") // cart, pending, delivered, cancelled
+  paymentProvider String? @default("mercadopago")
+  paymentStatus   String   @default("pending_payment") // pending_payment, preference_created, approved, rejected, cancelled, refunded, pending_setup
+  mpPreferenceId  String?
+  mpPaymentId     String?
+  mpMerchantOrderId String?
+  mpExternalReference String?
+  mpInitPoint     String?
+  paymentUpdatedAt DateTime?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  // Relations
+  user      User        @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+  paymentWebhookEvents PaymentWebhookEvent[]
+  idempotencyRequests IdempotencyRequest[]
+
+  @@map("orders")
+}
+
+model PaymentWebhookEvent {
+  id              Int      @id @default(autoincrement())
+  provider        String
+  providerEventId String   @unique
+  eventType       String?
+  resourceId      String?
+  payload         Json?
+  orderId         Int?
+  processedAt     DateTime @default(now())
+
+  order           Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@index([provider, resourceId])
+  @@map("payment_webhook_events")
+}
+
+model OrderItem {
+  id        Int @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  price     Float // Price at time of order
+  createdAt DateTime @default(now())
+
+  // Relations
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@unique([orderId, productId])
+  @@map("order_items")
+}
+
+model VerificationCode {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  code      String
+  purpose   String   @default("email_verification") // email_verification, password_reset, etc.
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, code])
+  @@map("verification_codes")
+}
+
+model PendingRegistration {
+  id           Int       @id @default(autoincrement())
+  email        String
+  passwordHash String
+  zoneId       Int
+  codeHash     String
+  expiresAt    DateTime
+  usedAt       DateTime?
+  attempts     Int       @default(0)
+  createdAt    DateTime  @default(now())
+
+  // Relations
+  zone         Zone      @relation(fields: [zoneId], references: [id])
+
+  @@index([email])
+  @@index([email, usedAt, expiresAt])
+  @@map("pending_registrations")
+}
