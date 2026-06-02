@@ -1,40 +1,40 @@
 # MultizonaProyect Demo
 
-Este repositorio muestra una demo de backend para un e-commerce multi-zona.
+This repository showcases a backend demo for a multi-zone e-commerce platform.
 
-La idea del proyecto es resolver una necesidad bastante concreta: operar varias tiendas o zonas dentro de una misma plataforma, manteniendo separacion de datos, flujo de compra y autenticacion, pero sin perder control central sobre la logica del negocio.
+The project is designed around a practical business need: running multiple stores or sales zones inside the same platform while keeping products, orders, carts, and payment flows under control.
 
-## Que demuestra esta demo
+## What this demo includes
 
-- Registro y login con JWT
-- Verificacion de cuenta por codigo
-- Catalogo de productos con imagenes
-- Carrito persistente en base de datos
-- Ordenes desde carrito y compra directa
-- Integracion de pagos con Mercado Pago
-- Base preparada para entornos multi-zona
+- JWT-based authentication
+- Email verification with code confirmation
+- Product catalog with image support
+- Persistent shopping cart stored in the database
+- Order creation from cart and direct purchase flow
+- Mercado Pago payment integration
+- Backend structure prepared for multi-zone commerce scenarios
 
-## En que tipo de proyecto encaja
+## What kind of project this fits
 
-Este tipo de backend sirve como base para:
+This type of backend can serve as a foundation for:
 
-- marketplaces locales
-- tiendas con cobertura por zonas
-- negocios que necesitan separar stock, ordenes o usuarios por region
-- proyectos que necesitan checkout, carrito y paneles administrativos como siguiente etapa
+- local marketplaces
+- regional e-commerce platforms
+- businesses that need separate stock, orders, or users by location
+- projects that need checkout, carts, and admin features as the next step
 
-## Enfoque de trabajo
+## Development approach
 
-El objetivo de esta demo no es solo mostrar endpoints, sino mostrar criterio de implementacion:
+The goal of this demo is not only to expose endpoints, but to show implementation quality and business logic handling:
 
-- validaciones de negocio en backend
-- control de stock
-- manejo de errores util para frontend
-- proteccion contra ordenes duplicadas
-- estructura versionada con Prisma y migraciones
-- preparacion para despliegue en la nube
+- backend-side validation
+- stock control
+- frontend-friendly error responses
+- duplicate order protection
+- versioned database structure with Prisma migrations
+- cloud-ready deployment flow
 
-## Stack utilizado
+## Stack
 
 - Node.js
 - Express
@@ -44,20 +44,20 @@ El objetivo de esta demo no es solo mostrar endpoints, sino mostrar criterio de 
 - Swagger / OpenAPI
 - Mercado Pago
 
-## Estado del repositorio
+## Public repository note
 
-Esta es una copia publica y sanitizada para portfolio.
+This is a sanitized public portfolio copy.
 
-- no incluye credenciales reales
-- no incluye archivos `.env`
-- no incluye backups de base de datos
-- no incluye scripts internos de reconstruccion usados solo para QA
+- no real credentials are included
+- no `.env` files are included
+- no database backups are included
+- no internal QA-only environment rebuild scripts are included
 
-## Sobre el codigo
+## About the codebase
 
-El proyecto esta pensado para ser una base realista, no un ejemplo minimo de laboratorio.  
-Por eso incluye migraciones, manejo de errores, configuracion de entorno, integracion de pagos y estructura de modulos separada por responsabilidad.
+This project is meant to reflect a realistic backend foundation rather than a minimal tutorial example.  
+That is why it includes migrations, environment configuration, payment integration, business validation, and a modular structure organized by responsibility.
 
-## Si te interesa algo similar
+## If you need something similar
 
-Si queres un backend de este estilo para un proyecto propio, esta demo sirve como referencia de alcance, arquitectura y nivel de detalle de implementacion.
+If you are looking for a backend of this kind for your own project, this demo works as a reference for scope, architecture, and implementation detail.
